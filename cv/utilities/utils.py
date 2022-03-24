@@ -23,5 +23,23 @@ def get_configs(path2config) -> Dict:
 
 def read_image(path2image: os.PathLike) -> np.ndarray:
     image = cv2.imread(path2image, -1)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(2, 0, 1)
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(2, 0, 1)
     return image
+
+
+def save_image(path2image: os.PathLike, image: np.ndarray):
+    if len(image.shape) == 3 and image.shape[0] == 3:
+        image.transpose(1, 2, 0)
+    return cv2.imwrite(path2image, image)
+
+
+def argtopk(arr: np.ndarray, k: int, axis: int=-1) -> np.ndarray:
+    r"""Return the indices of topk elements."""
+    return np.argsort(arr, axis=axis)[-k:]
+
+
+def topk(arr: np.ndarray, k: int, axis: int=-1) -> np.ndarray:
+    return arr[argtopk(arr, k, axis)]
+
+
