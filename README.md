@@ -5,7 +5,7 @@
 
 本项目代码按照以下方式组织:
 
-```python
+```txt
 cv # 项目根目录
 |_ cv
     |_ configs
