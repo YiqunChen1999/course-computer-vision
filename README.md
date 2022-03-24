@@ -5,7 +5,7 @@
 
 本项目代码按照以下方式组织:
 
-```bash
+```python
 cv # 项目根目录
 |_ cv
     |_ configs
@@ -30,7 +30,7 @@ cv # 项目根目录
 |_ results
     |_ coins.png
     |_ ...
-|_test
+|_ test
     |_ utilities
         |_ test_configs.py
         |_ ...
