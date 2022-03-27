@@ -6,11 +6,10 @@ author:
     Yiqun Chen
 """
 
-from ctypes import Union
 import os
 import sys
-
 sys.path.append(__file__.replace("utilities/configs.py", ""))
+__package__ = ".utilities.configs"
 
 from typing import Any
 
