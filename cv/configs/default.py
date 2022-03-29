@@ -11,6 +11,7 @@ import sys
 sys.path.append(__file__.replace("configs/default.py", ""))
 
 from cv.utilities.configs import Configs
+from cv.utilities.env import overwrite_configs_from_yaml
 
 PATH2MAIN = os.path.abspath(sys.argv[0])
 ROOT = PATH2MAIN.replace("cv/main.py", "") \
@@ -51,3 +52,5 @@ configs.detection = Configs()
 configs.detection.edge = Configs()
 configs.detection.corner = Configs()
 
+configs = overwrite_configs_from_yaml(configs)
+configs.cvt_state(read_only=True)

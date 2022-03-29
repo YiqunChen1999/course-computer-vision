@@ -56,6 +56,8 @@ cv # 项目根目录
 
 **注意**: 如需要编译可执行文件, 请按照 [pyinstaller]([https://](https://pyinstaller.readthedocs.io/en/stable/installation.html)) 的说明安装相应的软件包.
 
+**注意**: 如果需要重新编译, 建议创建一个新的环境, 并使用 `pip` 安装所有依赖, 如: `pip install -r requirements.txt`, 避免生成的可执行文件过大. **请勿安装非必要的包**
+
 ## TODO
 
-- [ ] 修改为运行时读取的配置文件;
+- [x] 修改为运行时读取的配置文件;

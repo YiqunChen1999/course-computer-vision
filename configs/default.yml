@@ -1,0 +1,34 @@
+
+
+configs: 
+  general: 
+    tasks: [segmentation]
+
+  image:
+    filetype: [png, jpg, jpeg]
+    # root: [
+    #   os.path.join(configs.general.root, "images"), 
+    #   configs.general.root, 
+    # ] # Where to search images which are to be processed.
+
+  # result: # Where to store images which are processed.
+    # root: os.path.join(configs.general.root, "results")
+
+  segmentation:
+    method: local_threshold #"local_threshold"
+    threshold: 
+      bins: 2
+      thre: auto
+      patches: [4, 4] # (num_rows, num_cols)
+    meanshift: 
+      kernel: Gaussian
+      bandwidth: 4
+      bins: 10
+      tolerance: 0.1
+      max_iters: 400
+      patches: [4, 4] # (num_rows, num_cols)
+
+  detection:
+    edge: false
+    corner: false
+
