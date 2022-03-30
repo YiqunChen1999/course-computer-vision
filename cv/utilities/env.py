@@ -25,26 +25,6 @@ def get_args():
     return args
 
 
-def merge_configs(
-    configs: Union[Configs, dict], 
-    another: Union[Configs, dict], 
-) -> Configs:
-    if isinstance(configs, Configs):
-        configs = dcp(configs).cvt2dict()
-    if isinstance(another, Configs):
-        another = dcp(another).cvt2dict()
-    for key, val in another.items():
-        if key not in configs.keys():
-            configs[key] = val
-        elif isinstance(val, dict) \
-                and isinstance(configs[key], dict):
-            cfg = merge_configs(configs[key], val).cvt2dict()
-            configs[key] = cfg
-        else:
-            configs[key] = val
-    return Configs(configs)
-
-
 def overwrite_configs_from_yaml(
     configs: Configs, path2yaml: os.PathLike=None
 ) -> Configs:
@@ -55,8 +35,8 @@ def overwrite_configs_from_yaml(
     if not os.path.exists(path2yaml):
         return configs
     with open(path2yaml, 'r') as fp:
-        configs_yaml = yaml.load(fp, yaml.Loader)["configs"]
-    configs = merge_configs(configs, configs_yaml)
+        configs_yaml = yaml.safe_load(fp)["configs"]
+    configs.merge_from(configs_yaml)
     return configs
 
 

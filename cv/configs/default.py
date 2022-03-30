@@ -22,7 +22,11 @@ configs = Configs()
 
 configs.general = Configs()
 configs.general.root = ROOT
-configs.general.tasks = ["segmentation"]
+configs.general.tasks = [
+    "segmentation.threshold", 
+    "segmentation.local_threshold", 
+    "segmentation.meanshift", 
+]
 
 configs.image = Configs()
 configs.image.filetype = ["png", "jpg", "jpeg"]
@@ -53,4 +57,4 @@ configs.detection.edge = Configs()
 configs.detection.corner = Configs()
 
 configs = overwrite_configs_from_yaml(configs)
-configs.cvt_state(read_only=True)
+configs.convert_state(read_only=True)

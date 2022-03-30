@@ -18,6 +18,8 @@ from cv.utilities.configs import Configs
 import cv.utilities.utils as utils
 from cv.ops.meanshift import MeanShift
 from cv.ops.kernel import Gaussian
+from cv.utilities.color import get_colors
+
 
 SEGMENTATIONS = {}
 def register(callable):
@@ -45,7 +47,9 @@ def segment_by_threshold(configs: Configs, image: np.ndarray) -> np.ndarray:
     lower_idx = image <= thre
     upper_idx = image > thre
     if len(image.shape) == 3:
-        upper_idx = (image[0] > thre) & (image[1] > thre) & (image[2] > thre)
+        upper_idx = (image[0] > thre) \
+                    & (image[1] > thre) \
+                    & (image[2] > thre)
     segmap = np.zeros((H, W), dtype=np.uint8)
     segmap[upper_idx] = 255
     return segmap
@@ -78,6 +82,7 @@ def segment_by_local_threshold(
 
     return segmap
 
+
 @register
 def segment_by_meanshift(
     configs: Configs, image: np.ndarray
@@ -91,6 +96,7 @@ def segment_by_meanshift(
     )
     image = utils.standarize_image(image)
     H, W = image.shape[-2: ]
+    
     points = image.copy().reshape(-1, H*W).transpose(1, 0)
     solver.fit(points)
     labels = solver(points)
@@ -99,29 +105,32 @@ def segment_by_meanshift(
     if len(image.shape) == 3:
         segmap = np.zeros((H, W, 3), dtype=np.uint8)
     else:
-        segmap = np.zeros((H, W), dtype=np.uint8)
+        segmap = np.zeros((H, W, 3), dtype=np.uint8)
     for l in np.unique(labels):
         segmap[labels==l, ...] = solver.centers[l].astype(np.uint8)
     return segmap
 
 
-def segment_one_image(configs: Configs, path2image: os.PathLike) -> np.ndarray:
+def segment_one_image(
+    configs: Configs, path2image: os.PathLike, method: str
+) -> np.ndarray:
     r"""Segment one image by method specified in configs."""
     image = utils.read_image(path2image)
-    if configs.segmentation.method == "meanshift":
+    print(f"Segmenting image by ** {method} **")
+    if method in ["meanshift"]:
         print(
-            "**NOTE** MeanShift segmentation result may be different between "
-            "different runs as MeanShift randomly initialize the "
+            "** NOTE ** MeanShift segmentation result may be different "
+            "among different runs as MeanShift randomly initialize the "
             "initial cluster centers. The color of cluster centers "
             "will be assigned to each (pixel) cluster."
         )
-    method = f"segment_by_{configs.segmentation.method}"
+    method = f"segment_by_{method}"
     segfunc = SEGMENTATIONS[method]
     return segfunc(configs, image)
 
 
 def segment_multiple_images_one_directory(
-    configs: Configs, image_root: os.PathLike
+    configs: Configs, image_root: os.PathLike, task: str
 ):
     r"""
     Segment all images in one directory and save to 
@@ -132,25 +141,25 @@ def segment_multiple_images_one_directory(
     valid_type: list = configs.image.filetype
 
     # Filter invalid files.
-    files = list(filter(
-        lambda x: x.split(".")[-1].lower() in valid_type, files
-    ))
-    files = list(filter(
-        lambda x: not x.startswith("result_"), files
-    ))
+    files = utils.filter_invalid_images(files, valid_type)
     if len(files) == 0:
         print(f"Find no images in folder {image_root}.")
     for fn in files:
         path2image = os.path.join(image_root, fn)
         print(f"Please wait while segmenting image from {path2image}.")
+
+        method = task.split(".")[-1]
         start = time.time()
-        result = segment_one_image(configs, path2image)
-        method = configs.segmentation.method
+
+        # Perform segmentation task.
+        result = segment_one_image(configs, path2image, method)
+
+        # Save result.
         fn = fn.replace(".", f"_segmentation_{method}.")
-        fn = "result_" + fn
         path2segmap = os.path.join(result_root, fn)
         success = utils.save_image(path2segmap, result)
         duration = time.time() - start
+
         if success:
             print(f"Done in {round(duration, 3)} seconds.")
             print(f"Save segmentation map to {path2segmap}.")
@@ -158,11 +167,11 @@ def segment_multiple_images_one_directory(
             print(f"Failed to save segmentation map to {path2segmap}.")
 
 
-def segment_multiple_images_multiple_directory(configs: Configs):
+def segment_multiple_images_multiple_directory(configs: Configs, task: str):
     image_roots = configs.image.root
     for root in image_roots:
         if not os.path.exists(root):
             print(f"Cannot find folder {root}")
             continue
-        segment_multiple_images_one_directory(configs, root)
+        segment_multiple_images_one_directory(configs, root, task)
 

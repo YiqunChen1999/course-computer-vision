@@ -17,8 +17,8 @@ from cv.utilities.env import check_env, print_info
 def main(configs: Configs):
     check_env(configs)
     for task in configs.general.tasks:
-        if task == "segmentation":
-            segment_multiple_images_multiple_directory(configs)
+        if task.split(".")[0] == "segmentation":
+            segment_multiple_images_multiple_directory(configs, task)
 
 
 if __name__ == "__main__":

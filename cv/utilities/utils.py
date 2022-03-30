@@ -51,3 +51,12 @@ def standarize_image(image: np.ndarray) -> np.ndarray:
     if len(image.shape) == 3 and image.shape[2] == 3:
         image = image.transpose(2, 0, 1)
     return image
+
+
+def filter_invalid_images(
+    files: list[str], valid_types: list[str]
+) -> list[str]:
+    return list(filter(
+        lambda x: x.split(".")[-1].lower() in valid_types, files
+    ))
+

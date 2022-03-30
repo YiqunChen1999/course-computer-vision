@@ -2,7 +2,11 @@
 
 configs: 
   general: 
-    tasks: [segmentation]
+    tasks: [
+      segmentation.threshold, 
+      segmentation.local_threshold, 
+      segmentation.meanshift, 
+    ]
 
   image:
     filetype: [png, jpg, jpeg]
@@ -15,7 +19,7 @@ configs:
     # root: os.path.join(configs.general.root, "results")
 
   segmentation:
-    method: local_threshold #"local_threshold"
+    method: meanshift #"local_threshold"
     threshold: 
       bins: 2
       thre: auto
