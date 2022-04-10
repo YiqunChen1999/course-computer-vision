@@ -18,7 +18,7 @@ from cv.utilities.configs import Configs
 import cv.utilities.utils as utils
 from cv.ops.meanshift import MeanShift
 from cv.ops.kernel import Gaussian
-from cv.utilities.utils import loginfo, logstatus
+from cv.utilities.env import loginfo, logstatus
 
 
 SEGMENTATIONS = {}
@@ -108,11 +108,8 @@ def segment_by_meanshift(
         segmap = np.zeros((H, W, 3), dtype=np.uint8)
     else:
         segmap = np.zeros((H, W, 3), dtype=np.uint8)
-    # colors = get_colors(len(np.unique(labels)))
     for cnt, l in enumerate(np.unique(labels)):
         segmap[labels==l, ...] = solver.centers[l].astype(np.uint8)
-        # color = np.asarray(colors[cnt])[np.newaxis].astype(np.uint8)
-        # segmap[labels==l, ...] = color
     return segmap
 
 

@@ -25,7 +25,6 @@ def get_args():
     return args
 
 
-
 def loginfo(info: str, *args, **kwargs):
     print("[ INFO ] " + info)
 
@@ -55,8 +54,24 @@ def check_env(configs: Configs):
     directories = list()
     directories.extend(dcp(configs.image.root))
     directories.append(configs.result.root)
+    directories.append(configs.logs.root)
     for path in directories:
         check_directory(path)
+
+
+def backup_configs(configs: Configs, name: str="") -> bool:
+    loginfo("Backup configs and results.")
+    root = configs.general.root
+    expr = configs.general.id
+    src = os.path.join(root, "configs")
+    des = configs.result.root
+    os.system(f"cp -r {src} {des}")
+    if name == "":
+        src = os.path.join(configs.logs.root, f"{expr}.tar.gz")
+    else:
+        src = os.path.join(configs.logs.root, f"{expr}-{name}.tar.gz")
+    des = "./results"
+    os.system(f"tar -zcvf {src} {des}")
 
 
 def check_directory(root: os.PathLike):
@@ -70,7 +85,7 @@ def check_file(path: os.PathLike):
         loginfo(f"Cannot find directory {path}.")
 
 
-def print_info():
+def print_info(info: str="INFO"):
     cols, _ = os.get_terminal_size(0)
-    half = (cols - 6) // 2
-    print("=" * half + " INFO " + "=" * half)
+    half = (cols - len(info) - 2) // 2
+    print("=" * half + f" {info} " + "=" * half)

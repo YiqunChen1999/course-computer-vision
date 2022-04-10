@@ -12,7 +12,7 @@ sys.path.append(__file__.replace("cv/main.py", ""))
 
 from cv.utilities.configs import Configs
 from cv.task.segmentation import segment_multiple_images_multiple_directory
-from cv.utilities.env import check_env, print_info
+from cv.utilities.env import check_env, print_info, backup_configs
 
 def main(configs: Configs):
     check_env(configs)
@@ -26,4 +26,5 @@ if __name__ == "__main__":
     from cv.configs.default import configs
     print(configs)
     main(configs)
+    backup_configs(configs)
     print_info()

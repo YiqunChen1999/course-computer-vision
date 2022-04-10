@@ -9,19 +9,25 @@ author:
 import os
 import sys
 sys.path.append(__file__.replace("configs/default.py", ""))
+import argparse
 
 from cv.utilities.configs import Configs
 from cv.utilities.env import overwrite_configs_from_yaml
 
 PATH2MAIN = os.path.abspath(sys.argv[0])
-ROOT = PATH2MAIN.replace("cv/main.py", "") \
-    if PATH2MAIN.endswith("main.py") else PATH2MAIN.replace("main", "")
+ROOT = PATH2MAIN.replace(f"cv/{os.path.basename(PATH2MAIN)}", "") \
+    if PATH2MAIN.endswith(".py") else PATH2MAIN.replace("main", "")
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--id", type=str, default="deploy")
+args = parser.parse_args()
 
 configs = Configs()
 
 configs.general = Configs()
 configs.general.root = ROOT
+configs.general.id = args.id
 configs.general.tasks = [
     "segmentation.threshold", 
     "segmentation.local_threshold", 
@@ -55,6 +61,9 @@ configs.segmentation.meanshift.patches = (4, 4) # (num_rows, num_cols)
 configs.detection = Configs()
 configs.detection.edge = Configs()
 configs.detection.corner = Configs()
+
+configs.logs = Configs()
+configs.logs.root = os.path.join(configs.general.root, "logs")
 
 configs = overwrite_configs_from_yaml(configs)
 configs.convert_state(read_only=True)

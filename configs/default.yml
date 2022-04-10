@@ -3,8 +3,8 @@
 configs: 
   general: 
     tasks: [
-      segmentation.threshold, 
-      segmentation.local_threshold, 
+      # segmentation.threshold, 
+      # segmentation.local_threshold, 
       segmentation.meanshift, 
     ]
 
@@ -26,11 +26,11 @@ configs:
       patches: [4, 4] # (num_rows, num_cols)
     meanshift: 
       kernel: Gaussian
-      bandwidth: 16
-      num_seeds: 10000
-      tolerance: 5.0
+      bandwidth: 72
+      num_seeds: 1000
+      tolerance: 1.0
       max_iters: 400
-      speedup: false
+      speedup: true
       # patches: [4, 4] # (num_rows, num_cols)
 
   detection:

@@ -11,3 +11,4 @@ main
 *cv.egg-info*
 *.tar.gz
 *.cache
+*logs*

@@ -8,7 +8,7 @@ import numpy as np
 
 from cv.ops.cluster import Cluster
 from cv.ops.kmeans import KMeans
-from cv.utilities.utils import loginfo, logstatus
+from cv.utilities.env import loginfo, logstatus
 
 class NormalizedSpectral(Cluster):
     def __init__(

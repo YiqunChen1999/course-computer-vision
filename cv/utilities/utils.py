@@ -32,6 +32,7 @@ def read_image(path2image: os.PathLike) -> np.ndarray:
     image = ImageOps.exif_transpose(image)
     # image = image.resize((200, 150))
     image = np.asarray(image)
+    loginfo(f"Read an image with resolution: {image.shape}")
     return image
 
 

@@ -13,7 +13,7 @@ from cv.ops.cluster import Cluster, KNearestNeighbors
 from cv.ops.kernel import Kernel
 from cv.utilities.init import INITIALIZER
 # from cv.utilities import utils
-from cv.utilities.utils import loginfo, logstatus
+from cv.utilities.env import loginfo, logstatus
 
 
 def single_center_meanshift(

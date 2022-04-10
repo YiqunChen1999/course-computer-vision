@@ -5,7 +5,7 @@ from copy import deepcopy as dcp
 import numpy as np
 
 from cv.ops.cluster import Cluster
-from cv.utilities.utils import loginfo, logstatus
+from cv.utilities.env import loginfo, logstatus
 
 class KMeans(Cluster):
     def __init__(
