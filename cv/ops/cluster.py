@@ -58,6 +58,6 @@ class KNearestNeighbors(Cluster):
                         - self._centers[np.newaxis, :, :]
         distances = np.linalg.norm(difference, axis=-1)
         assert tuple(distances.shape) == (data.shape[0], self.num_clusters)
-        label = np.argmax(distances, axis=-1)
+        label = np.argmin(distances, axis=-1)
         return label
 

@@ -9,22 +9,28 @@ author:
 import os
 import sys
 sys.path.append(__file__.replace("utilities/utils.py", ""))
-from typing import Dict
+from typing import Any, Callable, Dict, Iterable
 
 import numpy as np
 # import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 
-from cv.utilities.env import get_args
+from cv.utilities.env import get_args, loginfo, logstatus
 
 
 def get_configs(path2config) -> Dict:
     args = get_args()
 
 
+def get_max_workers() -> int:
+    return os.cpu_count() * 4
+
+
 def read_image(path2image: os.PathLike) -> np.ndarray:
     # image = cv2.imread(path2image, -1)
     image = Image.open(path2image)
+    image = ImageOps.exif_transpose(image)
+    # image = image.resize((200, 150))
     image = np.asarray(image)
     return image
 
@@ -59,4 +65,5 @@ def filter_invalid_images(
     return list(filter(
         lambda x: x.split(".")[-1].lower() in valid_types, files
     ))
+
 

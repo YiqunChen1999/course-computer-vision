@@ -18,7 +18,7 @@ from cv.utilities.configs import Configs
 import cv.utilities.utils as utils
 from cv.ops.meanshift import MeanShift
 from cv.ops.kernel import Gaussian
-from cv.utilities.color import get_colors
+from cv.utilities.utils import loginfo, logstatus
 
 
 SEGMENTATIONS = {}
@@ -90,9 +90,10 @@ def segment_by_meanshift(
     solver = MeanShift(
         kernel=Gaussian(), 
         bandwidth=configs.segmentation.meanshift.bandwidth, 
-        bins=configs.segmentation.meanshift.bins, 
+        num_seeds=configs.segmentation.meanshift.num_seeds, 
         tolerance=configs.segmentation.meanshift.tolerance, 
         max_iters=configs.segmentation.meanshift.max_iters, 
+        speedup=configs.segmentation.meanshift.speedup, 
     )
     image = utils.standarize_image(image)
     H, W = image.shape[-2: ]
@@ -100,14 +101,18 @@ def segment_by_meanshift(
     points = image.copy().reshape(-1, H*W).transpose(1, 0)
     solver.fit(points)
     labels = solver(points)
+    # labels = solver.predict(points)
     labels = labels.reshape(H, W)
     # Assign colors for each cluster.
     if len(image.shape) == 3:
         segmap = np.zeros((H, W, 3), dtype=np.uint8)
     else:
         segmap = np.zeros((H, W, 3), dtype=np.uint8)
-    for l in np.unique(labels):
+    # colors = get_colors(len(np.unique(labels)))
+    for cnt, l in enumerate(np.unique(labels)):
         segmap[labels==l, ...] = solver.centers[l].astype(np.uint8)
+        # color = np.asarray(colors[cnt])[np.newaxis].astype(np.uint8)
+        # segmap[labels==l, ...] = color
     return segmap
 
 
@@ -116,9 +121,8 @@ def segment_one_image(
 ) -> np.ndarray:
     r"""Segment one image by method specified in configs."""
     image = utils.read_image(path2image)
-    print(f"Segmenting image by ** {method} **")
     if method in ["meanshift"]:
-        print(
+        loginfo(
             "** NOTE ** MeanShift segmentation result may be different "
             "among different runs as MeanShift randomly initialize the "
             "initial cluster centers. The color of cluster centers "
@@ -142,13 +146,13 @@ def segment_multiple_images_one_directory(
 
     # Filter invalid files.
     files = utils.filter_invalid_images(files, valid_type)
-    if len(files) == 0:
-        print(f"Find no images in folder {image_root}.")
+    files = sorted(files)
+    loginfo(f"Find {len(files)} images in folder {image_root}.")
     for fn in files:
         path2image = os.path.join(image_root, fn)
-        print(f"Please wait while segmenting image from {path2image}.")
 
         method = task.split(".")[-1]
+        loginfo(f"Segmenting image {fn} by ** {method} **.")
         start = time.time()
 
         # Perform segmentation task.
@@ -161,17 +165,17 @@ def segment_multiple_images_one_directory(
         duration = time.time() - start
 
         if success:
-            print(f"Done in {round(duration, 3)} seconds.")
-            print(f"Save segmentation map to {path2segmap}.")
+            loginfo(f"Done in {round(duration, 3)} seconds.")
+            loginfo(f"Save segmentation map to {path2segmap}.")
         else:
-            print(f"Failed to save segmentation map to {path2segmap}.")
+            loginfo(f"Failed to save segmentation map to {path2segmap}.")
 
 
 def segment_multiple_images_multiple_directory(configs: Configs, task: str):
     image_roots = configs.image.root
     for root in image_roots:
         if not os.path.exists(root):
-            print(f"Cannot find folder {root}")
+            loginfo(f"Cannot find folder {root}")
             continue
         segment_multiple_images_one_directory(configs, root, task)
 

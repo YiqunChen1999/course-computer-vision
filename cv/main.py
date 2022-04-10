@@ -24,5 +24,6 @@ def main(configs: Configs):
 if __name__ == "__main__":
     print_info()
     from cv.configs.default import configs
+    print(configs)
     main(configs)
     print_info()

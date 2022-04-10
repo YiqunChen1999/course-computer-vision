@@ -1,4 +1,4 @@
 numpy>=1.22.3 
 pillow>=9.0.1
 pyyaml>=6.0
-alphaconfig>=0.0.2
+attrmap>=0.0.3

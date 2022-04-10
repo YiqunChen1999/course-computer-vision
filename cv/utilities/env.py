@@ -25,6 +25,17 @@ def get_args():
     return args
 
 
+
+def loginfo(info: str, *args, **kwargs):
+    print("[ INFO ] " + info)
+
+
+def logstatus(status: str, newline=False, *args, **kwargs):
+    cols, _ = os.get_terminal_size(0)
+    end = "\n" if newline else ""
+    print("\r" + " " * cols + "\r" + "[ INFO ] " + status, end=end)
+
+
 def overwrite_configs_from_yaml(
     configs: Configs, path2yaml: os.PathLike=None
 ) -> Configs:
@@ -50,13 +61,13 @@ def check_env(configs: Configs):
 
 def check_directory(root: os.PathLike):
     if not os.path.exists(root):
-        print(f"Cannot find directory {root}, make it now.")
+        loginfo(f"Cannot find directory {root}, make it now.")
         os.makedirs(root)
 
 
 def check_file(path: os.PathLike):
     if not os.path.exists(path):
-        print(f"Cannot find directory {path}.")
+        loginfo(f"Cannot find directory {path}.")
 
 
 def print_info():

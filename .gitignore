@@ -8,3 +8,6 @@ images
 main.spec
 main
 # IMG_1900.jpg
+*cv.egg-info*
+*.tar.gz
+*.cache

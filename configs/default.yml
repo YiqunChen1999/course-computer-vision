@@ -26,11 +26,12 @@ configs:
       patches: [4, 4] # (num_rows, num_cols)
     meanshift: 
       kernel: Gaussian
-      bandwidth: 4
-      bins: 10
-      tolerance: 0.1
+      bandwidth: 16
+      num_seeds: 10000
+      tolerance: 5.0
       max_iters: 400
-      patches: [4, 4] # (num_rows, num_cols)
+      speedup: false
+      # patches: [4, 4] # (num_rows, num_cols)
 
   detection:
     edge: false
