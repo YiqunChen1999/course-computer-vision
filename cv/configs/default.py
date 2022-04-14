@@ -21,6 +21,8 @@ ROOT = PATH2MAIN.replace(f"cv/{os.path.basename(PATH2MAIN)}", "") \
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--id", type=str, default="deploy")
+parser.add_argument("--speedup", action="store_true")
+parser.add_argument("--parallel", action="store_true")
 args = parser.parse_args()
 
 configs = Configs()
@@ -42,7 +44,11 @@ configs.image.root = [
 ]
 
 configs.result = Configs()
-configs.result.root = os.path.join(configs.general.root, "results")
+configs.result.root = os.path.join(
+    configs.general.root, 
+    "results", 
+    # "" if configs.general.id == "deploy" else configs.general.id,
+)
 
 configs.segmentation = Configs()
 configs.segmentation.method = "meanshift" #"local_threshold"
@@ -53,7 +59,7 @@ configs.segmentation.threshold.patches = (4, 4) # (num_rows, num_cols)
 configs.segmentation.meanshift = Configs()
 configs.segmentation.meanshift.kernel = "Gaussian"
 configs.segmentation.meanshift.bandwidth = 4
-configs.segmentation.meanshift.bins = 10
+# configs.segmentation.meanshift.bins = 10
 configs.segmentation.meanshift.tolerance = 1e-1
 configs.segmentation.meanshift.max_iters = 400
 configs.segmentation.meanshift.patches = (4, 4) # (num_rows, num_cols)
@@ -63,7 +69,12 @@ configs.detection.edge = Configs()
 configs.detection.corner = Configs()
 
 configs.logs = Configs()
-configs.logs.root = os.path.join(configs.general.root, "logs")
+configs.logs.root = os.path.join(
+    configs.general.root, "logs", configs.general.id
+)
+configs.logs.path2log = os.path.join(configs.logs.root, "log.txt")
 
 configs = overwrite_configs_from_yaml(configs)
+configs.segmentation.meanshift.speedup = args.speedup
+configs.segmentation.meanshift.parallel = args.parallel
 configs.convert_state(read_only=True)

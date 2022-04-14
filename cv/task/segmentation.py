@@ -94,6 +94,7 @@ def segment_by_meanshift(
         tolerance=configs.segmentation.meanshift.tolerance, 
         max_iters=configs.segmentation.meanshift.max_iters, 
         speedup=configs.segmentation.meanshift.speedup, 
+        parallel=configs.segmentation.meanshift.parallel, 
     )
     image = utils.standarize_image(image)
     H, W = image.shape[-2: ]

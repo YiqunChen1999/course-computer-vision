@@ -15,15 +15,15 @@ from cv.task.segmentation import segment_multiple_images_multiple_directory
 from cv.utilities.env import check_env, print_info, backup_configs
 
 def main(configs: Configs):
-    check_env(configs)
     for task in configs.general.tasks:
         if task.split(".")[0] == "segmentation":
             segment_multiple_images_multiple_directory(configs, task)
 
 
 if __name__ == "__main__":
-    print_info()
     from cv.configs.default import configs
+    check_env(configs)
+    print_info()
     print(configs)
     main(configs)
     backup_configs(configs)

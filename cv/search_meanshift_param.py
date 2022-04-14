@@ -16,9 +16,9 @@ from cv.utilities.env import check_env, print_info, backup_configs
 
 INFO = "SEARCH MEANSHIFT PARAMS"
 RANGE = {
-    "BANDWIDTH": range(10, 96), 
+    "BANDWIDTH": range(48, 96, 4), 
     "SEEDS": (1000, 10000), 
-    "TOLERANCE": [0.1, 0.5] + [1.0 + 0.5 * i for i in range(16)], 
+    "TOLERANCE": [3.0 + 0.5 * i for i in range(11)], 
 }
 
 def main(configs: Configs):
@@ -33,9 +33,11 @@ if __name__ == "__main__":
     from cv.configs.default import configs
     print(RANGE)
     RANGE["TOLERANCE"].reverse()
-    for bandwidth in RANGE["BANDWIDTH"]:
-        for num_seeds in RANGE["SEEDS"]:
+    for num_seeds in RANGE["SEEDS"]:
+        for bandwidth in RANGE["BANDWIDTH"]:
             for tolerance in RANGE["TOLERANCE"]:
+                name = f"bw{bandwidth}-ns{num_seeds}-tol{tolerance}"
+                print(name)
                 configs.convert_state(read_only=False)
                 configs.segmentation.meanshift.bandwidth = bandwidth
                 configs.segmentation.meanshift.num_seeds = num_seeds
@@ -43,6 +45,5 @@ if __name__ == "__main__":
                 configs.convert_state(read_only=True)
                 print(configs)
                 main(configs)
-                name = f"bw{bandwidth}-ns{num_seeds}-tol{tolerance}"
                 backup_configs(configs, name)
     print_info(INFO)

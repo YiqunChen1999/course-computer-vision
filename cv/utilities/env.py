@@ -25,14 +25,28 @@ def get_args():
     return args
 
 
+def log2file(
+    message: str, 
+    path2file: os.PathLike="./logs/log.txt", 
+    *args, 
+    **kwargs, 
+):
+    with open(path2file, 'a') as fp:
+        print(message, file=fp, *args, **kwargs)
+
+
 def loginfo(info: str, *args, **kwargs):
-    print("[ INFO ] " + info)
+    message = "[ INFO ] " + info
+    print(message)
+    log2file(message)
 
 
 def logstatus(status: str, newline=False, *args, **kwargs):
     cols, _ = os.get_terminal_size(0)
     end = "\n" if newline else ""
-    print("\r" + " " * cols + "\r" + "[ INFO ] " + status, end=end)
+    message = "\r" + " " * cols + "\r" + "[ INFO ] " + status
+    print(message, end=end)
+    log2file(message, end=end)
 
 
 def overwrite_configs_from_yaml(
@@ -71,21 +85,25 @@ def backup_configs(configs: Configs, name: str="") -> bool:
     else:
         src = os.path.join(configs.logs.root, f"{expr}-{name}.tar.gz")
     des = "./results"
+    loginfo(f"Backup file: {src}")
     os.system(f"tar -zcvf {src} {des}")
 
 
 def check_directory(root: os.PathLike):
     if not os.path.exists(root):
-        loginfo(f"Cannot find directory {root}, make it now.")
+        print(f"Cannot find directory {root}, make it now.")
         os.makedirs(root)
 
 
 def check_file(path: os.PathLike):
     if not os.path.exists(path):
-        loginfo(f"Cannot find directory {path}.")
+        print(f"Cannot find directory {path}.")
 
 
 def print_info(info: str="INFO"):
     cols, _ = os.get_terminal_size(0)
     half = (cols - len(info) - 2) // 2
-    print("=" * half + f" {info} " + "=" * half)
+    message = "=" * half + f" {info} " + "=" * half
+    print(message)
+    log2file(message)
+
