@@ -6,6 +6,7 @@ configs:
       # segmentation.threshold, 
       # segmentation.local_threshold, 
       segmentation.meanshift, 
+      # segmentation.spatial_meanshift, 
     ]
 
   image:
@@ -26,9 +27,9 @@ configs:
       patches: [4, 4] # (num_rows, num_cols)
     meanshift: 
       kernel: Gaussian
-      bandwidth: 68
-      num_seeds: 1000
-      tolerance: 3.0
+      bandwidth: 92
+      num_seeds: null
+      tolerance: 5.0
       max_iters: 400
       speedup: false
       # patches: [4, 4] # (num_rows, num_cols)

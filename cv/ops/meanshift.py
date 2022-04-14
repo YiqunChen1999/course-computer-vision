@@ -16,7 +16,6 @@ import ctypes
 from cv.ops.cluster import Cluster, KNearestNeighbors
 from cv.ops.kernel import Kernel
 from cv.utilities.init import INITIALIZER
-# from cv.utilities import utils
 from cv.utilities.env import loginfo, logstatus
 
 
@@ -149,6 +148,7 @@ class MeanShift(Cluster):
                 if centers.ready():
                     break
                 remaining = centers._number_left * centers._chunksize
+                remaining = min(self.num_clusters, remaining)
                 completed = self.num_clusters - remaining
                 logstatus(
                     self._fitting_message_template.format(

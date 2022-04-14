@@ -114,6 +114,46 @@ def segment_by_meanshift(
     return segmap
 
 
+@register
+def segment_by_spatial_meanshift(
+    configs: Configs, image: np.ndarray
+) -> np.ndarray:
+    solver = MeanShift(
+        kernel=Gaussian(), 
+        bandwidth=configs.segmentation.meanshift.bandwidth, 
+        num_seeds=configs.segmentation.meanshift.num_seeds, 
+        tolerance=configs.segmentation.meanshift.tolerance, 
+        max_iters=configs.segmentation.meanshift.max_iters, 
+        speedup=configs.segmentation.meanshift.speedup, 
+        parallel=configs.segmentation.meanshift.parallel, 
+    )
+    image = utils.standarize_image(image)
+    H, W = image.shape[-2: ]
+    xgrid = np.arange(W)
+    ygrid = np.arange(H)
+    xgrid, ygrid = np.meshgrid(xgrid, ygrid, indexing="xy")
+    xgrid = xgrid[np.newaxis] / xgrid.max() * 255
+    ygrid = ygrid[np.newaxis] / ygrid.max() * 255
+    points = image.copy()
+    if len(points.shape) == 2:
+        points = points[np.newaxis]
+    points = np.concatenate([points,  xgrid, ygrid], axis=0)
+    points = points.reshape(-1, H*W).transpose(1, 0)
+    solver.fit(points)
+    labels = solver(points)
+    # labels = solver.predict(points)
+    labels = labels.reshape(H, W)
+    # Assign colors for each cluster.
+    if len(image.shape) == 3:
+        segmap = np.zeros((H, W, 3), dtype=np.uint8)
+    else:
+        segmap = np.zeros((H, W, 3), dtype=np.uint8)
+    for cnt, l in enumerate(np.unique(labels)):
+        color = solver.centers[l].astype(np.uint8)[0: len(image.shape), :]
+        segmap[labels==l, ...] = color
+    return segmap
+
+
 def segment_one_image(
     configs: Configs, path2image: os.PathLike, method: str
 ) -> np.ndarray:
