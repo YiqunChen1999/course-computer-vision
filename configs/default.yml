@@ -28,11 +28,10 @@ configs:
     meanshift: 
       kernel: Gaussian
       bandwidth: 92
-      num_seeds: null
+      num_seeds: 1000
       tolerance: 5.0
       max_iters: 400
       speedup: false
-      # patches: [4, 4] # (num_rows, num_cols)
 
   detection:
     edge: false

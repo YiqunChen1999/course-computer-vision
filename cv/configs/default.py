@@ -23,6 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--id", type=str, default="deploy")
 parser.add_argument("--speedup", action="store_true")
 parser.add_argument("--parallel", action="store_true")
+parser.add_argument("--workers", type=int, default=None)
 args = parser.parse_args()
 
 configs = Configs()
@@ -58,11 +59,12 @@ configs.segmentation.threshold.thre = "auto"
 configs.segmentation.threshold.patches = (4, 4) # (num_rows, num_cols)
 configs.segmentation.meanshift = Configs()
 configs.segmentation.meanshift.kernel = "Gaussian"
-configs.segmentation.meanshift.bandwidth = 4
-# configs.segmentation.meanshift.bins = 10
-configs.segmentation.meanshift.tolerance = 1e-1
+configs.segmentation.meanshift.bandwidth = 92
+configs.segmentation.meanshift.tolerance = 5.0
 configs.segmentation.meanshift.max_iters = 400
-configs.segmentation.meanshift.patches = (4, 4) # (num_rows, num_cols)
+configs.segmentation.meanshift.speedup = args.speedup
+configs.segmentation.meanshift.parallel = args.parallel
+configs.segmentation.meanshift.workers = args.workers
 
 configs.detection = Configs()
 configs.detection.edge = Configs()

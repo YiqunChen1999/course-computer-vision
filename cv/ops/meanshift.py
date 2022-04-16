@@ -68,10 +68,10 @@ class MeanShift(Cluster):
         tolerance: float=1.0,  
         speedup: bool=False, 
         parallel: bool=False, 
+        workers: int=None,
         eps: float=1e-6, 
         max_iters: int=400, 
         init_method: str="initialize_centers_from_histogram", 
-        num_tasks: int=None, 
     ) -> None:
         super().__init__(max_iters)
         self.kernel = kernel
@@ -80,9 +80,9 @@ class MeanShift(Cluster):
         self.tolerance = tolerance
         self.speedup = speedup
         self.parallel = parallel
+        self.workers = workers
         self.eps = eps
         self.init_method = init_method
-        self.num_tasks = num_tasks
 
     def fit(self, data: np.ndarray, label: np.ndarray=None):
         r"""
@@ -134,7 +134,9 @@ class MeanShift(Cluster):
         shared_data = np.frombuffer(shared_data.get_obj())
         shared_data = shared_data.reshape(data.shape)
         shared_data[:] = data[:]
-        with mp.Pool(os.cpu_count()) as executor:
+        workers = os.cpu_count() if self.workers is None else self.workers
+        loginfo(f"{workers} workers are running.")
+        with mp.Pool(workers) as executor:
             centers = executor.starmap_async(
                 single_center_meanshift, 
                 zip(
@@ -202,7 +204,7 @@ class MeanShift(Cluster):
         assert len(data.shape) == 2, data.shape
         num_samples, num_feats = data.shape
         if self.num_seeds is None:
-            self.num_seeds = data.shape[0]
+            self.num_seeds = int(data.shape[0] * 0.1)
         self._centers = INITIALIZER[self.init_method](data, self.num_seeds)
 
         # Execute tasks parallel until convergence or reach max iters.

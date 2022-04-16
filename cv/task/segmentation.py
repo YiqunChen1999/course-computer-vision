@@ -95,6 +95,7 @@ def segment_by_meanshift(
         max_iters=configs.segmentation.meanshift.max_iters, 
         speedup=configs.segmentation.meanshift.speedup, 
         parallel=configs.segmentation.meanshift.parallel, 
+        workers=configs.segmentation.meanshift.workers, 
     )
     image = utils.standarize_image(image)
     H, W = image.shape[-2: ]
@@ -126,6 +127,7 @@ def segment_by_spatial_meanshift(
         max_iters=configs.segmentation.meanshift.max_iters, 
         speedup=configs.segmentation.meanshift.speedup, 
         parallel=configs.segmentation.meanshift.parallel, 
+        workers=configs.segmentation.meanshift.workers, 
     )
     image = utils.standarize_image(image)
     H, W = image.shape[-2: ]
