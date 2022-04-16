@@ -31,7 +31,7 @@ configs:
       num_seeds: 1000
       tolerance: 5.0
       max_iters: 400
-      speedup: false
+      # speedup: false
 
   detection:
     edge: false

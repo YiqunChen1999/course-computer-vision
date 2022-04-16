@@ -202,7 +202,7 @@ def segment_multiple_images_one_directory(
         fn = fn.replace(".", f"_segmentation_{method}.")
         path2segmap = os.path.join(result_root, fn)
         success = utils.save_image(path2segmap, result)
-        duration = time.time() - start
+        duration = round(time.time() - start, 3)
 
         if success:
             loginfo(f"Done in {round(duration, 3)} seconds.")
@@ -213,9 +213,11 @@ def segment_multiple_images_one_directory(
 
 def segment_multiple_images_multiple_directory(configs: Configs, task: str):
     image_roots = configs.image.root
+    start = time.time()
     for root in image_roots:
         if not os.path.exists(root):
             loginfo(f"Cannot find folder {root}")
             continue
         segment_multiple_images_one_directory(configs, root, task)
-
+    duration = round(time.time() - start, 3)
+    loginfo(f"Totally cost {duration} seconds.")
