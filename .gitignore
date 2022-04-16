@@ -12,3 +12,4 @@ main
 *.tar.gz
 *.cache
 *logs*
+*highreso*
