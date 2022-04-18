@@ -10,6 +10,5 @@ import os
 import sys
 sys.path.append(__file__.replace("utilities/configs.py", ""))
 
-# from alphaconfig import AlphaConfig as Configs
 from attrmap import AttrMap as Configs
 

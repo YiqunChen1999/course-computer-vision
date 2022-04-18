@@ -3,14 +3,13 @@
 configs: 
   general: 
     tasks: [
-      # segmentation.threshold, 
-      # segmentation.local_threshold, 
+      segmentation.threshold, 
+      segmentation.local_threshold, 
       segmentation.meanshift, 
-      # segmentation.spatial_meanshift, 
     ]
 
   image:
-    filetype: [png, jpg, jpeg]
+    filetype: [png, jpg, jpeg, PNG, JPG, JPEG]
     # root: [
     #   os.path.join(configs.general.root, "images"), 
     #   configs.general.root, 
@@ -20,7 +19,6 @@ configs:
     # root: os.path.join(configs.general.root, "results")
 
   segmentation:
-    method: meanshift #"local_threshold"
     threshold: 
       bins: 2
       thre: auto
@@ -31,9 +29,3 @@ configs:
       num_seeds: 1000
       tolerance: 5.0
       max_iters: 400
-      # speedup: false
-
-  detection:
-    edge: false
-    corner: false
-

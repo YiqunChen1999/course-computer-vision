@@ -13,3 +13,4 @@ main
 *.cache
 *logs*
 *highreso*
+*.pdf

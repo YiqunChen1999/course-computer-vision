@@ -1,12 +1,20 @@
 
 # 计算机视觉
 
-## 代码说明
+本代码将在 2022-04-30 开源于 [GitHub](https://github.com/YiqunChen1999/course-computer-vision).
+
+## 运行环境
+
+本代码已在 Ubuntu 20.04 (含 Windows Subsystem Linux 2, WSL 2) 下通过测试, 可执行文件应在 Linux 环境下运行.
+
+## 文件说明
 
 本项目代码按照以下方式组织:
 
 ```txt
 cv # 项目根目录
+|_ configs
+    |_ default.yml
 |_ cv
     |_ configs
         |_ default.py
@@ -36,22 +44,38 @@ cv # 项目根目录
         |_ ...
     |_ ...
 |_ .gitignore
+|_ compile.sh
 |_ README.md
 |_ requirements.txt
 |_ run.sh
 |_ main
+|_ 实验报告.pdf
+|_ setup.py
 ```
+
+源代码、README.md 文件、可执行文件 (`main`) 以及实验报告均位于根目录下, 其中：
+
+- `cv/configs` 下存储着可修改的配置文件;
+- `cv/cv` 文件夹存储着程序源代码;
+- `cv/images` 下存储着待处理图像 (`cv/coins.png` 也是待处理图像, 程序可自动识别 `cv` 下以及 `cv/images` 下的待处理图片);
+- `cv/results` 下存储着处理完毕的图像, 它们的文件命名方式为 `NAME_segmentation_METHOD.png/jpg`, 其中 NAME 是原本图片的文件名;
+- `METHOD` 是使用的图像分割算法 (如 `meanshift`);
+- `cv/test` 下存储着代码开发过程中的单元测试代码;
+- `cv/logs` 下存储着程序运行时的日志;
+- `cv/compile.sh` 为编译可执行文件的脚本;
+- `cv/setup.py` 为开发过程中的安装脚本;
+- `cv/run.sh` 为开发过程中运行代码的脚本.
 
 ## 输入图像
 
-尽管程序也会自动查找 `run.sh` 同级目录下的图片并进行处理, 但为了保持文件夹的整洁性, 建议将图像放置于 `cv/images` 之下, 代码运行结果将保存于 `cv/results` 之下, 避免因产生结果过多导致文件夹混乱不堪. 当前已经实现的算法为阈值分割算法, 默认任务为 `segmentation`, 若需要增加或者修改任务, 请在 `cv/cv/configs/default.py` 中的 `configs.general.tasks` 修改.
+程序会自动查找 `main` 同级目录下的图片并进行处理, 但为了保持文件夹的整洁性, 建议将图像放置于 `cv/images` 之下, 代码运行结果将保存于 `cv/results` 之下, 避免因产生结果过多导致文件夹混乱不堪. 当前已经实现的算法为Mean Shift 分割算法, 默认任务为 `segmentation`, 若需要增加或者修改任务, 请在 `cv/cv/configs/default.py` 中的 `configs.general.tasks` 修改.
 
 ## 运行程序
 
 请进入项目根目录, 并在 Linux 终端下运行:
 
 ```bash
-main [-h] [--id ID] [--speedup] [--parallel] [--workers WORKERS]
+./main [-h] [--id ID] [--speedup] [--parallel] [--workers WORKERS]
 ```
 
 参数说明：
@@ -60,6 +84,7 @@ main [-h] [--id ID] [--speedup] [--parallel] [--workers WORKERS]
 2. `--speedup`: 是否开启基于聚类中心合并的加速方法, 默认为否, 该设置无法与 `--parallel` 同时生效, 后者的优先级高于此选项;
 3. `--parallel`: 是否开启基于并行计算的加速方法, 默认为否, 该设置无法与 `--speedup` 同时生效, 本选项优先级更高;
 4. `--workers`: 当使用基于并行计算的加速方法时, 使用的 CPU 数目, 若不指定, 则默认为机器上所有的 CPU 数目;
+5. `-h`: 展示帮助信息.
 
 ## 更改默认设置
 
@@ -71,7 +96,7 @@ main [-h] [--id ID] [--speedup] [--parallel] [--workers WORKERS]
 
 ## 重新编译
 
-如果需要修改配置, 创建一个虚拟环境并运行 `./run.sh`, 然后修改 `cv/cv/configs/default.py` 中的文件, 之后可以直接在**根目录下**运行 `python cv/main.py`, 或者在**根目录**下通过 `pyinstaller --onefile --distpath ./ cv/main.py` 编译可执行文件并运行 `./main`.
+如果需要修改配置, 创建一个虚拟环境并运行 `./run.sh`, 然后修改 `cv/cv/configs/default.py` 中的文件, 之后可以直接在**根目录下**运行 `python cv/main.py`, 或者在**根目录**下通过 `./compile.sh` 编译可执行文件并运行 `./main` 文件.
 
 **注意**: 如需要编译可执行文件, 请按照 [pyinstaller]([https://](https://pyinstaller.readthedocs.io/en/stable/installation.html)) 的说明安装相应的软件包.
 
