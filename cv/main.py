@@ -9,6 +9,7 @@ author:
 import os
 import sys
 sys.path.append(__file__.replace("cv/main.py", ""))
+import multiprocessing as mp
 
 from cv.utilities.configs import Configs
 from cv.task.segmentation import segment_multiple_images_multiple_directory
@@ -22,6 +23,10 @@ def main(configs: Configs):
 
 if __name__ == "__main__":
     from cv.configs.default import configs
+    if "win" in configs.general.platform:
+        mp.set_start_method("spawn")
+    else:
+        mp.set_start_method("fork")
     check_env(configs)
     print_info()
     print(configs)

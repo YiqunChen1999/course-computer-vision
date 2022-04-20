@@ -14,9 +14,15 @@ import argparse
 from cv.utilities.configs import Configs
 from cv.utilities.env import overwrite_configs_from_yaml
 
+platform = sys.platform
+EXECUTABLE = "main.exe" if "win" in platform else "main"
 PATH2MAIN = os.path.abspath(sys.argv[0])
-ROOT = PATH2MAIN.replace(f"cv/{os.path.basename(PATH2MAIN)}", "") \
-    if PATH2MAIN.endswith(".py") else PATH2MAIN.replace("main", "")
+if "win" in platform:
+    ROOT = PATH2MAIN.replace(f"cv\\{os.path.basename(PATH2MAIN)}", "") \
+        if PATH2MAIN.endswith(".py") else PATH2MAIN.replace(EXECUTABLE, "")
+else:
+    ROOT = PATH2MAIN.replace(f"cv/{os.path.basename(PATH2MAIN)}", "") \
+        if PATH2MAIN.endswith(".py") else PATH2MAIN.replace(EXECUTABLE, "")
 
 
 parser = argparse.ArgumentParser()
@@ -30,6 +36,7 @@ configs = Configs()
 
 configs.general = Configs()
 configs.general.root = ROOT
+configs.general.platform = platform
 configs.general.id = args.id
 configs.general.tasks = [
     "segmentation.threshold", 

@@ -42,7 +42,7 @@ def loginfo(info: str, *args, **kwargs):
 
 
 def logstatus(status: str, newline=False, *args, **kwargs):
-    cols, _ = os.get_terminal_size(0)
+    cols = os.get_terminal_size()[0]
     end = "\n" if newline else ""
     message = "\r" + " " * cols + "\r" + "[ INFO ] " + status
     print(message, end=end)
@@ -79,14 +79,18 @@ def backup_configs(configs: Configs, name: str="") -> bool:
     expr = configs.general.id
     src = os.path.join(root, "configs")
     des = configs.result.root
-    os.system(f"cp -r {src} {des}")
+    cpy = "copy" if "win" in configs.general.platform else "cp -r"
+    # command = f"{cpy} {src} {des}"
+    # print(command)
+    os.system(f"{cpy} {src} {des}")
     if name == "":
-        src = os.path.join(configs.logs.root, f"{expr}.tar.gz")
+        des = os.path.join(configs.logs.root, f"{expr}")
     else:
-        src = os.path.join(configs.logs.root, f"{expr}-{name}.tar.gz")
-    des = "./results"
+        des = os.path.join(configs.logs.root, f"{expr}-{name}")
+    src = os.path.join(configs.general.root, "results")
     loginfo(f"Backup file: {src}")
-    os.system(f"tar -zcvf {src} {des}")
+    # print(command)
+    os.system(f"{cpy} {src} {des}")
 
 
 def check_directory(root: os.PathLike):
@@ -101,7 +105,7 @@ def check_file(path: os.PathLike):
 
 
 def print_info(info: str="INFO"):
-    cols, _ = os.get_terminal_size(0)
+    cols = os.get_terminal_size()[0]
     half = (cols - len(info) - 2) // 2
     message = "=" * half + f" {info} " + "=" * half
     print(message)
